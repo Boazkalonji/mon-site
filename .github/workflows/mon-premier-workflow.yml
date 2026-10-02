@@ -16,5 +16,3 @@ jobs:
       - name: Afficher la liste des fichiers du projet
         run : ls -la
   
-      - name: suppression des dossier des testes
-        run : rm -r testes
