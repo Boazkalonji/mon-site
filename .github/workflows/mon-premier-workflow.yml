@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: telecharger le modifications dans la branche soit develop ou master
-        uses: cation/checkout@v4
+        uses: action/checkout@v4
 
       - name: execution du teste
         run: echo "Le robot vérifie le code de la Pull Request ou du push sur develop !" 
