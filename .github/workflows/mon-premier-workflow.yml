@@ -7,9 +7,7 @@ on:
     paths:
       - '**.html'
       - 'backend/**'
-    paths-ignore:
-      - 'readme.md'
-      - 'testes/**'
+
 
 
   pull_request:
@@ -19,9 +17,7 @@ on:
     paths:
       - '**.html'
       - 'backend/**'
-    paths-ignore:
-      - 'readme.md'
-      - 'testes/**'
+    
 
 jobs:
 
