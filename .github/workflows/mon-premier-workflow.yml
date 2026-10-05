@@ -1,21 +1,35 @@
-name: mon exercice module deux
+name: CI Avancée - Filtrage par Paths
 
 on:
   push:
-    branches: ["develop"]
+    branches: ["master","develop","realese/**"]
 
-  pull_request: 
-    branches: ["master"]
+    paths:
+      - '**.html'
+      - 'backend/**'
+
+
+
+  pull_request:
+    branches: ["master","develop","realese/**"]
+    type: [opened,synchronize]
+
+    paths:
+      - '**.html'
+      - 'backend/**'
+    
 
 jobs:
 
-  verifier-qualites-code:
+  verification-intelligente:
     runs-on: ubuntu-latest
 
     steps:
-      - name: telecharger le modifications dans la branche soit develop ou master
+      - name: Télécharger le code source
         uses: actions/checkout@v4
 
-      - name: execution du teste
-        run: echo "Le robot vérifie le code de la Pull Request ou du push sur develop !" 
-
+      - name: Lancer les vérifications sur le code
+        run: |
+         echo "=== LE ROBOT A FILTRÉ AVEC SUCCÈS ==="
+         echo "Ce workflow ne s'est déclenché que parce qu'un fichier HTML ou du backend a été touché !"
+         ls -la
