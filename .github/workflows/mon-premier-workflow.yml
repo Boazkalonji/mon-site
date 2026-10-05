@@ -1,18 +1,21 @@
-name: mon premier workflow
+name: mon exercice module deux
 
 on:
   push:
-    branches: ["master","develop"]
+    branches: ["develop"]
+
+  pull_request: 
+    branches: ["master"]
 
 jobs:
-  verifier-le-code:
+
+  verifier-qualites-code:
     runs-on: ubuntu-latest
 
     steps:
+      - name: telecharger le modifications dans la branche soit develop ou master
+        uses: cation/checkout@v4
 
-      - name: telecharger les fichiers dans master
-        uses: actions/checkout@v4
-  
-      - name: Afficher la liste des fichiers du projet
-        run : ls -la
-  
+      - name: execution du teste
+        run: echo "Le robot vérifie le code de la Pull Request ou du push sur develop !" 
+
