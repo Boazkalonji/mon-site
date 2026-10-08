@@ -1,35 +1,113 @@
-name: CI Avancée - Filtrage par Paths
+name: MODULE TROIS FORMATION GITHUB
 
 on:
+
   push:
-    branches: ["master","develop","realese/**"]
 
-    paths:
-      - '**.html'
-      - 'backend/**'
+    branches: ['master','develop']
+    path:
+      - 'backends/**'
+      - '**.py'
 
+    type: ['opened','synchronize']
 
 
   pull_request:
-    branches: ["master","develop","realese/**"]
-    type: [opened,synchronize]
 
-    paths:
-      - '**.html'
-      - 'backend/**'
-    
+    branches: 
+      - 'master'
+      - 'develop'
+
+    paths: ['backends/**','**.py']
+    types:
+      - 'opened'
+      - 'synchronize'
+
+
+
+
 
 jobs:
 
-  verification-intelligente:
-    runs-on: ubuntu-latest
+  exercice-module-trois:
+
+    runs-on: ${{matrix.os}}
+
+    strategy:
+  
+      
+      max-parallel: 2
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.11']
+        os: [ubuntu-latest, windows-latest]
+
+    env:
+      DB_PASS: ${{secrets.DB_PRODUCTION_PASSWORD}}
+
+    outputs:
+      STATUS: ${{steps.test.outputs.variable}}
 
     steps:
-      - name: Télécharger le code source
-        uses: actions/checkout@v4
 
-      - name: Lancer les vérifications sur le code
+      - name: telechargerment donner dans la branches
+        uses: actions/checkout@v5
+
+      - name: Préparateur du fichier build
+        id: test
         run: |
-         echo "=== LE ROBOT A FILTRÉ AVEC SUCCÈS ==="
-         echo "Ce workflow ne s'est déclenché que parce qu'un fichier HTML ou du backend a été touché !"
-         ls -la
+         mkdir rapport
+
+         echo "contenu du fichier built est : " > rapport/build.txt
+         echo "$variable=success" >> $GITHUB_OUTPUT
+
+      - name: rapport-built-${{ matrix.os }}-${{ matrix.python-version }}
+        uses: actions/upload-artifact@v4
+         with:
+          name: rapport-built
+          path: rapport/build.txt
+
+      - name: generation du fichier requirement.txt
+        run: |
+
+         pip freeeze> rapport/requirements.txt
+
+    
+      - name: save du requirements.txt
+        uses: actions/upload-artifact@v4
+         with:
+          name: requirements-${{ matrix.os }}-${{ matrix.python-version }}
+          path: rapport/requirements.txt
+
+
+
+ recuperation-donnes:
+  
+  needs: exercice-module-trois
+  runs-on: ${{matrix.os}}
+
+  steps:
+
+    - name: recuperation des donnees 
+      if: ${{needs.exercice-module-trois.output.STATUS}} == ""
+      run: |
+       echo "aucune donnees a tratitee"
+
+    - uses: actions/download-artifact@v4
+       with:
+        name: rapport-built
+
+    - name: affichage
+      run: |
+
+      echo "===AFFICHAGE DU BUILD"
+      cat rapport/build.txt
+
+    - uses: actions/download-artifact@v4
+       with:
+        name: requirements
+
+    - name: installation paquet
+      run: |
+       pip install -r rapport/requirements.txt
+
